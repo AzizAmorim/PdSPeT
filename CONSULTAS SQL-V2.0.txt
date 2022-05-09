@@ -1,0 +1,122 @@
+1-
+
+1.1-(Visualizar Cliente)
+SELECT *
+FROM Customers;
+--------------------------------
+SELECT *
+FROM Customers
+WHERE CustomerID = CustomerID-RECEBIDO;
+
+
+
+1.2-(Inserir Cliente)
+INSERT INTO Customers (CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax)
+VALUES (CustomerID-RECEBIDO, CompanyName-RECEBIDO, ContactName-RECEBIDO, ContactTitle-RECEBIDO, Address-RECEBIDO, City-RECEBIDO, Region-RECEBIDO, PostalCode-RECEBIDO, Country-RECEBIDO, Phone-RECEBIDO, Fax-RECEBIDO);
+--------------------------------
+EXISTS (
+    SELECT *
+    FROM Customers
+    WHERE CustomerID = CustomerID-RECEBIDO
+); -- Retornará TRUE se uma subconsulta tiver qualquer linha. --
+
+
+
+1.3-(Remover Cliente)
+DELETE FROM Customers
+WHERE CustomerID = CustomerID-RECEBIDO;
+--------------------------------
+EXISTS (
+    SELECT *
+    FROM Orders AS Ord
+    WHERE Ord.CustomerID = CustomerID-RECEBIDO
+);
+
+
+
+1.4-(Atualizar Cliente)
+UPDATE Customers
+SET NOME-DO-ATRIBUTO = VALOR-RECEBIDO
+WHERE CustomerID = CustomerID-RECEBIDO;
+--------------------------------
+EXISTS (
+    SELECT *
+    FROM Customers
+    WHERE CustomerID = CustomerID-RECEBIDO
+);
+
+
+
+2- (Visualizar Compras)
+
+SELECT *
+FROM [Order Details];
+--------------------------------
+SELECT *
+FROM Orders;
+
+
+
+3-(Inserir Compras)
+
+INSERT INTO Orders (OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry)
+VALUES (OrderID-RECEBIDO, CustomerID-RECEBIDO, EmployeeID-RECEBIDO, OrderDate-RECEBIDO, RequiredDate-RECEBIDO, ShippedDate-RECEBIDO, ShipVia-RECEBIDO, Freight-RECEBIDO, ShipName-RECEBIDO, ShipAddress-RECEBIDO, ShipCity-RECEBIDO, ShipRegion-RECEBIDO, ShipPostalCode-RECEBIDO, ShipCountry-RECEBIDO);
+--------------------------------
+EXISTS (
+    SELECT *
+    FROM Orders
+    WHERE OrdersID = OrderID-RECEBIDO
+);
+EXISTS (
+    SELECT *
+    FROM Customers
+    WHERE CustomerID = CustomerID-RECEBIDO
+);
+EXISTS (
+    SELECT *
+    FROM Employees
+    WHERE EmployeeID = EmployeeID-RECEBIDO
+);
+-------------------------------
+-- PARA CADA PRODUTO --
+INSERT INTO [Order Details] (OrderID, ProductID, UnitPrice, Quantity, Discount)
+VALUES (OrderID-RECEBIDO, ProductID-RECEBIDO, UnitPrice-RECEBIDO, Quantity-RECEBIDO, Discount-RECEBIDO);
+--------------------------------
+
+
+
+5-
+
+USE Northwind;
+--------------------------------
+CREATE TRIGGER VeriProd
+ON Products
+FOR INSERT
+AS
+IF
+EXISTS (
+	SELECT *
+    FROM Products
+    WHERE ProductID = ProductID-RECEBIDO
+)
+BEGIN
+   PRINT 'Produto OK'
+END
+
+ELSE
+BEGIN
+   ROLLBACK TRANSACTION
+END;
+
+
+
+4-
+
+USE Northwind;
+--------------------------------
+CREATE PROC relatorio
+AS
+SELECT COUNT(*)
+FROM Orders;
+--------------------------------
+EXEC relatorio;
